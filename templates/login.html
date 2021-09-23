@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+<!-- ПРИМЕР ИСПОЛЬЗОВАНИЯ МОДУЛЯ WTFORMS В PYTHON/FLASK -->
+
+
+{% block content %}
+
+{{ super() }}
+
+
+<!------------------------------------------------v-->
+{% for cat, msg in get_flashed_messages(True) %}      <!-- форма для отображения flash сообщений, если такие передаются -->
+	<div class="flash {{ cat }}"> {{ msg }} </div>
+{% endfor %}
+<!------------------------------------------------^-->
+
+
+<form action="" method="post" class="form-contact">
+{{ form.hidden_tag() }} <!-- секретный ключ против взлома -->
+	
+	{% for field in form if field.name not in ['csrf_token', 'remember', 'submit'] %} <!-- Сюда попадут поля email и psw -->	
+		<p> {{ field.label() }}
+<!----- Обрабатываем ошибки полей--------->		
+		{% if field.errors %}
+			{{ field(class='invalid') }}
+			<span class="invalid-feedback">
+				{% for e in field.errors %}
+					{{ e }}
+				{% endfor %}
+			</span>
+<!---------------------------------------->
+		{% else %} <!-- Идем сюда, если ошибок ввода не выявлено -->
+			{{ field()}}
+		{% endif %}
+	{% endfor %}
+
+	<p> {{ form.remember.label() }} {{ form.remember()}}
+	<p> {{ form.submit()}}
+	<hr align="left" width="300px">
+	<p><a href="{{ url_for('register') }}"> Регистрация </a>
+</form>
+
+{% endblock %}	
